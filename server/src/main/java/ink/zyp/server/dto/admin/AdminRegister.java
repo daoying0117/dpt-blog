@@ -1,5 +1,6 @@
-package ink.zyp.server.request.admin;
+package ink.zyp.server.dto.admin;
 
+import ink.zyp.server.utils.DptReUtil;
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
 
@@ -25,19 +26,12 @@ public class AdminRegister {
     private String phone;
 
     public boolean checkParams(){
-        //TODO 检查邮箱格式
-
-        //TODO 检查手机号格式
-
-        if (StringUtils.isNotBlank(password)
+        return StringUtils.isNotBlank(password)
                 && StringUtils.isNotBlank(confirmPassword)
-                && password.equals(confirmPassword)){
-            return true;
-        }
-
-        //TODO 检查账户是否存在
-
-        return false;
+                && password.equals(confirmPassword)
+                && DptReUtil.isSafePassword(password)
+                && DptReUtil.isEmail(email)
+                && DptReUtil.isPhone(phone);
     }
 
     public String getName() {

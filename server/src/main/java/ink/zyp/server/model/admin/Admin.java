@@ -4,7 +4,8 @@ import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import ink.zyp.server.request.admin.AdminRegister;
+import ink.zyp.server.dto.admin.AdminConfig;
+import ink.zyp.server.dto.admin.AdminRegister;
 
 /**
  * @author daoying
@@ -115,6 +116,35 @@ public class Admin {
         this.motto = motto;
         this.email = email;
         this.phone = phone;
+    }
+
+    public static Admin configToAdmin(AdminConfig config) {
+        return new Admin(
+                config.getId(),
+                null,
+                null,
+                null,
+                config.getNickName(),
+                config.getHeadImg(),
+                null,
+                null,
+                config.getBackImg(),
+                config.getMotto(),
+                config.getEmail(),
+                config.getPhone()
+        );
+    }
+
+    public static AdminConfig adminToConfig(Admin admin) {
+        return new AdminConfig(
+                admin.getId(),
+                admin.getNickName(),
+                admin.getHeadImg(),
+                admin.getBackImg(),
+                admin.getMotto(),
+                admin.getEmail(),
+                admin.getPhone()
+        );
     }
 
     public Integer getId() {

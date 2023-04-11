@@ -1,50 +1,52 @@
-package ink.zyp.server.request.admin;
+package ink.zyp.server.dto.admin;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
+import cn.dev33.satoken.stp.StpUtil;
+import ink.zyp.server.utils.DptReUtil;
+import io.swagger.annotations.ApiParam;
 
 /**
  * 管理员信息配置请求实体
  * @author daoying
  */
 public class AdminConfig {
-    @TableId(type = IdType.AUTO)
+
+    @ApiParam(value = "用户id",required = true)
     private Integer id;
 
-    /**
-     * 用户昵称
-     */
+    @ApiParam(value = "用户昵称")
     private String nickName;
 
-    /**
-     * 头像图片URL
-     */
+    @ApiParam(value = "头像图片URL")
     private String headImg;
 
-    /**
-     * 背景图片
-     */
+    @ApiParam(value = "背景图片")
     private String backImg;
 
-    /**
-     * 签名&描述
-     */
+    @ApiParam(value = "签名&描述")
     private String motto;
 
-    /**
-     * 邮箱
-     */
+    @ApiParam(value = "邮箱")
     private String email;
 
-    /**
-     * 手机号
-     */
+    @ApiParam(value = "手机号")
     private String phone;
 
 
-    public boolean checkParams(){
+    public AdminConfig() {
+    }
 
-        return false;
+    public AdminConfig(Integer id, String nickName, String headImg, String backImg, String motto, String email, String phone) {
+        this.id = id;
+        this.nickName = nickName;
+        this.headImg = headImg;
+        this.backImg = backImg;
+        this.motto = motto;
+        this.email = email;
+        this.phone = phone;
+    }
+
+    public boolean checkParams(){
+        return DptReUtil.isEmail(email) && DptReUtil.isPhone(phone) && id.equals(StpUtil.getLoginId());
     }
 
     public Integer getId() {
