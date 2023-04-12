@@ -3,6 +3,8 @@ package ink.zyp.server.controller.admin;
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.stp.StpUtil;
 import ink.zyp.server.common.JsonResult;
+import ink.zyp.server.dto.admin.AdminLogin;
+import ink.zyp.server.dto.admin.AdminLoginResponese;
 import ink.zyp.server.model.admin.Admin;
 import ink.zyp.server.dto.admin.AdminConfig;
 import ink.zyp.server.dto.admin.AdminRegister;
@@ -39,7 +41,7 @@ public class AdminController {
 
     @ApiOperation("管理员注册")
     @PostMapping("/register")
-    public JsonResult register(AdminRegister admin){
+    public JsonResult register(@RequestBody AdminRegister admin){
 
         //校验参数
         if (Objects.nonNull(admin)){
@@ -56,26 +58,23 @@ public class AdminController {
         //注册
         if (adminService.save(Admin.registerToAdmin(admin))){
             log.info("管理员{}注册成功",admin.getName());
-            return JsonResult.ok("注册成功");
+            return JsonResult.ok().msg("注册成功");
         }
 
         return JsonResult.fail("注册失败");
     }
 
     @ApiOperation("管理员登录")
-    @GetMapping("/login")
-    public JsonResult login(
-            @RequestParam(name = "用户名") String name,
-            @RequestParam(value = "密码") String password,
-            @RequestParam(value = "验证码",required = false) String code
-    ){
+    @PostMapping("/login")
+    public JsonResult login(@RequestBody AdminLogin login){
         if (verificationCode){
             //TODO 验证码校验
         }
 
         //登录校验
-        Admin admin = adminService.checkLogin(name, password);
+        Admin admin = adminService.checkLogin(login.getUsername(), login.getPassword());
         if (Objects.isNull(admin)){
+            log.warn("登录错误账户为: {}",login.getUsername());
             return JsonResult.fail("账号或密码错误");
         }
 
@@ -83,7 +82,7 @@ public class AdminController {
         StpUtil.login(admin.getId());
         log.info("管理员{}登录成功",admin.getName());
 
-        return JsonResult.ok("登录成功");
+        return JsonResult.ok(AdminLoginResponese.adminToRespone(admin)).msg("登录成功");
     }
 
     @ApiOperation("更新管理员配置")
@@ -99,7 +98,7 @@ public class AdminController {
 
             //更新数据
             if (adminService.updateById(Admin.configToAdmin(config))) {
-                return JsonResult.ok("更新成功");
+                return JsonResult.ok().msg("更新成功");
             }
         }
         return JsonResult.fail("更新失败");

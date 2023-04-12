@@ -1,6 +1,7 @@
 package ink.zyp.server.dto.admin;
 
 import ink.zyp.server.utils.DptReUtil;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
 
@@ -8,6 +9,8 @@ import org.apache.commons.lang3.StringUtils;
  * 管理员注册请求实体
  * @author daoying
  */
+
+@ApiModel("管理员注册请求实体")
 public class AdminRegister {
 
     @ApiParam(value = "用户名",required = true)
