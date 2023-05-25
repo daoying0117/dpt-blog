@@ -6,28 +6,29 @@
             </div>
             <el-form
                 ref="ruleFormRef"
-                :model="ruleForm"
+                :model="loginForm"
                 status-icon
-                :rules="rules"
                 class="demo-ruleForm"
             >
                 <el-form-item>
                     <el-input
-                        v-model="username"
+                        v-model="loginForm.username"
                         placeholder="用户名"
+                        type="text"
                         :prefix-icon="User"
                     />
                 </el-form-item>
                 <el-form-item>
                     <el-input
-                        v-model="password"
+                        v-model="loginForm.password"
                         placeholder="密码"
+                        :type="passwordType"
                         :prefix-icon="Lock"
                         show-password
                     />
                 </el-form-item>
                 <el-form-item>
-                    <el-button @click="submitForm(ruleFormRef)"
+                    <el-button :loading="loading" @click.prevent="handleLogin"
                         >登录</el-button
                     >
                 </el-form-item>
@@ -55,60 +56,44 @@
 </template>
 
 <script setup lang="ts">
-import { reactive,ref } from 'vue'
+import { ref } from 'vue'
 import {Lock,User} from '@element-plus/icons-vue'
-import type { FormInstance, FormRules } from 'element-plus'
 import { useRoute, useRouter } from 'vue-router'
+import { useUserInfoStore } from '@/stores/userInfo';
 
+const userInfoStore = useUserInfoStore()
 // 路由跳转
 const router = useRouter()
 
-// 表单校验
-const ruleFormRef = ref<FormInstance>()
-const ruleForm = ref({
-    username:'',
-    password:''
+// 登录表单的数据
+const loginForm = ref({
+  username: '',
+  password: ''
 })
-// 校验规则
-const rules = ref<FormRules>({
-    // 用户名
-    username: [
-        {
-        required: true,
-        message: 'username must be a string',
-        trigger: 'blur',
-        },
-    ],
-    // 密码
-    password: [
-        { required: true, message: 'password must be a number', trigger: 'blur' },
-        { min: 6, max: 12, message: 'Length should be 6 to 12', trigger: 'blur' },
-    ],
-
-})
-
-const submitForm = async (formEl: FormInstance | undefined) => {
-    if (!formEl) return
-    await formEl.validate((valid, fields) => {
-        if (valid) {
-        console.log('submit!')
-        } else {
-        console.log('error submit!', fields)
-        }
-    })
-    // 登录成功后 跳转首页
-    router.push({ path: '/home'})
-
+// 登录过程的loading 默认不显示
+const loading = ref(false)
+// 点击登录的回调
+const handleLogin = async () => {
+    // 显示loading
+    loading.value = true
+    // 获取用户名 密码
+    const {username, password} = loginForm.value
+    // 调用接口
+    try {
+        await userInfoStore.login(username, password)
+         // 登录成功后 跳转首页
+        router.push({ path: '/home'})
+    } finally {
+        // 关闭loading
+        loading.value = false
+    }
 }
 
-const resetForm = (formEl: FormInstance | undefined) => {
-  if (!formEl) return
-  formEl.resetFields()
-}
 // 用户名默认为空
 const username = ref('')
 // 密码默认为空
 const password = ref('')
+const passwordType = ref('password')
 </script>
 
 <style lang="scss">

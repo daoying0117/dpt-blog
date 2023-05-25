@@ -44,15 +44,15 @@ export default defineConfig((mode: ConfigEnv) => {
         ],
       },
     },
-    server: {
-      proxy: {
-        '/app-dev': {
-          target: 'http://gmall-h5-api.atguigu.cn',
-          changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/app-dev/, ''),
-        },
-      }
-    }
+    // server: {
+    //   proxy: {
+    //     '/app-dev': {
+    //       target: 'http://192.168.31.132:7788',
+    //       changeOrigin: true,
+    //       rewrite: (path) => path.replace(/^\/app-dev/, ''),
+    //     },
+    //   }
+    // }
   };
 });
 
